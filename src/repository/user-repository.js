@@ -2,6 +2,7 @@ const { User, Role } = require("../models/index");
 
 const bcrypt = require("bcrypt");
 const ValidationError = require("../utils/validation-error");
+const { NotFound } = require("http-errors");
 class UserRepository {
   async create(data) {
     try {
@@ -52,6 +53,7 @@ class UserRepository {
           email: userEmail,
         },
       });
+      if (!user) throw new NotFound("User not found");
       return user;
     } catch (error) {
       console.log("Something went wrong on repository level");
