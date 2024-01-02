@@ -2,6 +2,7 @@ const { JWT_KEY } = require("../config/serverConfig.js");
 const { UserRepository } = require("../repository/index.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const AppErrors = require("../utils/error-handlers.js");
 class userService {
   constructor() {
     this.userRepository = new UserRepository();
@@ -11,8 +12,16 @@ class userService {
       const user = await this.userRepository.create(data);
       return user;
     } catch (error) {
+      if (error.name == "SequelizeValidationError") {
+        throw error;
+      }
       console.log("Something went wrong in the service layer");
-      throw { error };
+      throw new AppErrors(
+        "ServerError",
+        "Something went wrong in the service layer",
+        "Logical issue found",
+        500
+      );
     }
   }
   async destroy(data) {
@@ -92,6 +101,15 @@ class userService {
       const user = this.userRepository.getById(isTokenVerified.id);
       if (!user) throw new Error("User not found");
       return user.id;
+    } catch (error) {
+      console.log("Something went wrong in the service layer");
+      throw error;
+    }
+  }
+  async isAdmin(userId) {
+    try {
+      const adminRole = await this.userRepository.isAdmin(userId);
+      return adminRole;
     } catch (error) {
       console.log("Something went wrong in the service layer");
       throw error;

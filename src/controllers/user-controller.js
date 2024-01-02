@@ -16,11 +16,12 @@ const create = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      message: "Something went wrong",
+    const statusCode = error.statusCode;
+    return res.status(statusCode).json({
+      message: error.message,
       data: {},
       success: false,
-      err: error,
+      err: error.explanation,
     });
   }
 };
@@ -79,10 +80,29 @@ const isAuthenticated = async (req, res, next) => {
     });
   }
 };
+const isAdmin = async (req, res) => {
+  try {
+    console.log(req.body);
+    const response = await userService.isAdmin(req.body.userId);
+    res.json({
+      success: true,
+      message: "Successfully fetched  whether the user is admin or not",
+      data: response,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something went wrong",
+      data: {},
+      success: false,
+      err: error,
+    });
+  }
+};
 
 module.exports = {
   create,
   getById,
   userSignIn,
   isAuthenticated,
+  isAdmin,
 };
