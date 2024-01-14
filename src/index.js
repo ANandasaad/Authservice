@@ -7,7 +7,7 @@ const db = require("./models/index.js");
 const prepareAndStartServer = () => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use("/api", apiRoutes);
+  app.use("/authservice/api", apiRoutes);
   app.listen(3001, () => {
     console.log("Server started at", PORT);
     // if (process.env.DB_SYNC) {

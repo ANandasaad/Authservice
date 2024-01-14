@@ -3,6 +3,11 @@ const UserController = require("../../controllers/user-controller.js");
 const { AuthRequestValidation } = require("../../middlewares/index.js");
 const router = express.Router();
 
+router.get("/auth",(req,res)=>{
+  return res.json({
+     message:"auth services"
+   })
+ })
 router.post(
   "/signup",
   AuthRequestValidation.validateUserAuth,
@@ -19,4 +24,5 @@ router.get(
   AuthRequestValidation.validateIsAdminRequest,
   UserController.isAdmin
 );
+
 module.exports = router;
